@@ -1,3 +1,5 @@
+"""Juego de la papa caliente usando una cola FIFO y una ventana con Tkinter."""
+
 import tkinter as tk
 import random
 
@@ -6,31 +8,37 @@ PASES = 2
 
 
 class Cola:
-    # Una cola normal: el primero que llega es el primero en salir
+    """Cola FIFO (First In, First Out): el primero que entra es el primero en salir."""
 
     def __init__(self):
-        # Empezamos con una lista vacía
+        """Crea una lista vacía para guardar los jugadores."""
         self.datos = []
 
     def enqueue(self, nombre):
-        # Mete a alguien al principio de la lista
+        """Agrega un jugador al final de la cola, al principio de la lista."""
         self.datos.insert(0, nombre)
 
     def dequeue(self):
-        # Saca al que está al final de la lista
+        """Retira al jugador del frente de la cola, al final de la lista."""
         return self.datos.pop()
 
     def size(self):
-        # Cuenta cuántos quedan jugando
+        """Devuelve la cantidad de jugadores que quedan."""
         return len(self.datos)
 
     def fila(self):
-        # Da vuelta la lista para ver el orden real de los turnos
+        """Devuelve una copia invertida de la lista para mostrar los turnos."""
         return self.datos[::-1]
 
 
 def papa_caliente(nombres, pases):
-    # Esta es la lógica del juego para armar la lista de jugadas
+    """Calcula las jugadas y las guarda para mostrarlas en la animación.
+
+    Recibe los nombres de los jugadores y la cantidad de pases por ronda.
+    En cada pase, el primero de la cola pasa al final.
+    Después de los pases, se elimina al que queda en el frente.
+    Devuelve los pasos del juego, incluyendo al ganador.
+    """
     if not nombres or pases < 1:
         raise ValueError("Se necesita al menos un nombre y un pase.")
     cola = Cola()
@@ -54,7 +62,12 @@ def papa_caliente(nombres, pases):
 
 
 def animar(pasos, turno=0, cuadro=0):
-    # Esta función dibuja la animación en la pantalla cuadrito por cuadrito
+    """Muestra los movimientos de los jugadores en la ventana.
+
+    pasos contiene las jugadas, turno indica la jugada actual y cuadro
+    indica el avance del movimiento. Se usa after para continuar
+    la animación y al terminar se activa otra vez el botón.
+    """
     fila, accion, mensaje = pasos[turno]
     lienzo.delete("all")
     lienzo.create_text(12, 17, anchor="w", text=mensaje, font=("Arial", 12))
@@ -80,7 +93,11 @@ def animar(pasos, turno=0, cuadro=0):
 
 
 def jugar():
-    # Mezcla los nombres para que sea al azar y arranca la animación
+    """Mezcla una copia de los nombres y empieza la animación del juego.
+
+    Desactiva el botón mientras se juega. El orden cambia al azar,
+    aunque una misma persona puede volver a ganar.
+    """
     boton.config(state="disabled")
     jugadores = NOMBRES.copy()
     random.shuffle(jugadores)
